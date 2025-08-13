@@ -1,14 +1,49 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { Hero } from "@/components/Hero";
+import { GameDashboard } from "@/components/GameDashboard";
+import { RapidFireGame } from "@/components/RapidFireGame";
+
+type AppState = "home" | "dashboard" | "rapid-fire" | "conductor" | "triple-step";
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const [currentView, setCurrentView] = useState<AppState>("home");
+
+  const handleStartTraining = () => {
+    setCurrentView("dashboard");
+  };
+
+  const handleGameSelect = (gameId: string) => {
+    switch (gameId) {
+      case "rapid-fire":
+        setCurrentView("rapid-fire");
+        break;
+      case "conductor":
+        // TODO: Implement Conductor game
+        break;
+      case "triple-step":
+        // TODO: Implement Triple Step game
+        break;
+    }
+  };
+
+  const handleBackToHome = () => {
+    setCurrentView("home");
+  };
+
+  const handleBackToDashboard = () => {
+    setCurrentView("dashboard");
+  };
+
+  switch (currentView) {
+    case "home":
+      return <Hero onStartTraining={handleStartTraining} />;
+    case "dashboard":
+      return <GameDashboard onGameSelect={handleGameSelect} onBack={handleBackToHome} />;
+    case "rapid-fire":
+      return <RapidFireGame onBack={handleBackToDashboard} />;
+    default:
+      return <Hero onStartTraining={handleStartTraining} />;
+  }
 };
 
 export default Index;

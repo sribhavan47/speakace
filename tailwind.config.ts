@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -52,6 +53,11 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Speak Ace custom colors
+				confidence: 'hsl(var(--confidence))',
+				energy: 'hsl(var(--energy))',
+				focus: 'hsl(var(--focus))',
+				calm: 'hsl(var(--calm))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -67,6 +73,21 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			backgroundImage: {
+				'gradient-confidence': 'var(--gradient-confidence)',
+				'gradient-energy': 'var(--gradient-energy)',
+				'gradient-hero': 'var(--gradient-hero)',
+				'gradient-calm': 'var(--gradient-calm)',
+			},
+			boxShadow: {
+				'soft': 'var(--shadow-soft)',
+				'confidence': 'var(--shadow-confidence)',
+				'energy': 'var(--shadow-energy)',
+			},
+			transitionTimingFunction: {
+				'smooth': 'var(--transition-smooth)',
+				'bounce': 'var(--transition-bounce)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -84,11 +105,26 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-confidence': {
+					'0%, 100%': { opacity: '1', transform: 'scale(1)' },
+					'50%': { opacity: '0.8', transform: 'scale(1.05)' }
+				},
+				'slide-up': {
+					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'mic-pulse': {
+					'0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 hsl(var(--confidence) / 0.4)' },
+					'50%': { transform: 'scale(1.1)', boxShadow: '0 0 0 10px hsl(var(--confidence) / 0)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-confidence': 'pulse-confidence 2s infinite',
+				'slide-up': 'slide-up 0.5s ease-out',
+				'mic-pulse': 'mic-pulse 2s infinite'
 			}
 		}
 	},
