@@ -1,55 +1,50 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Mic, MicOff, Play, Square, RotateCcw, Trophy } from "lucide-react";
+import { ArrowLeft, Mic, MicOff, Play, Trophy, Volume2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-interface RapidFireGameProps {
+interface ConductorGameProps {
   onBack: () => void;
 }
 
 interface GameStats {
-  totalPrompts: number;
-  completedResponses: number;
-  averageResponseTime: number;
+  energyTransitions: number;
+  averageEnergyMatch: number;
+  breatheCuesFollowed: number;
   sessionDuration: number;
 }
 
-export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
+export const ConductorGame = ({ onBack }: ConductorGameProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
-  const [currentPrompt, setCurrentPrompt] = useState("");
-  const [promptIndex, setPromptIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(5);
+  const [currentEnergyLevel, setCurrentEnergyLevel] = useState(5);
+  const [targetEnergyLevel, setTargetEnergyLevel] = useState(5);
+  const [timeLeft, setTimeLeft] = useState(10);
   const [isListening, setIsListening] = useState(false);
+  const [showBreathe, setShowBreathe] = useState(false);
   const [gameStats, setGameStats] = useState<GameStats>({
-    totalPrompts: 0,
-    completedResponses: 0,
-    averageResponseTime: 0,
+    energyTransitions: 0,
+    averageEnergyMatch: 0,
+    breatheCuesFollowed: 0,
     sessionDuration: 0
   });
   
   const { toast } = useToast();
   const recognitionRef = useRef<any>(null);
   const startTimeRef = useRef<number>(0);
-  const promptStartRef = useRef<number>(0);
-  const responseTimes = useRef<number[]>([]);
+  const energyChanges = useRef<number>(0);
 
-  const prompts = [
-    "Business is like",
-    "Leadership is like",
-    "Success is like",
-    "Innovation is like",
-    "Teamwork is like",
-    "Communication is like",
-    "Learning is like",
-    "Creativity is like",
-    "Problem-solving is like",
-    "Growth is like",
-    "Confidence is like",
-    "Public speaking is like"
+  const topics = [
+    "The importance of teamwork in modern business",
+    "How technology is changing our daily lives",
+    "The benefits of sustainable living",
+    "Why continuous learning matters",
+    "The power of effective communication"
   ];
+
+  const [currentTopic] = useState(topics[Math.floor(Math.random() * topics.length)]);
 
   // Initialize speech recognition
   useEffect(() => {
@@ -68,13 +63,6 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
         setIsListening(false);
       };
 
-      recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[event.resultIndex][0].transcript;
-        if (event.results[event.resultIndex].isFinal && transcript.trim().length > 5) {
-          handleResponse(transcript);
-        }
-      };
-
       recognitionRef.current.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         toast({
@@ -83,12 +71,6 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
           variant: "destructive"
         });
       };
-    } else {
-      toast({
-        title: "Browser Not Supported",
-        description: "Speech recognition is not supported in this browser. Please use Chrome or Edge.",
-        variant: "destructive"
-      });
     }
 
     return () => {
@@ -98,15 +80,15 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
     };
   }, [toast]);
 
-  // Game timer
+  // Game timer and energy level changes
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (gameStarted && !gameEnded && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
-            nextPrompt();
-            return 5;
+            endGame();
+            return 0;
           }
           return prev - 1;
         });
@@ -114,6 +96,32 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
     }
     return () => clearInterval(interval);
   }, [gameStarted, gameEnded, timeLeft]);
+
+  // Random energy level changes and breathe cues
+  useEffect(() => {
+    let energyInterval: NodeJS.Timeout;
+    let breatheInterval: NodeJS.Timeout;
+
+    if (gameStarted && !gameEnded) {
+      energyInterval = setInterval(() => {
+        const newLevel = Math.floor(Math.random() * 9) + 1;
+        setTargetEnergyLevel(newLevel);
+        energyChanges.current += 1;
+      }, 3000);
+
+      breatheInterval = setInterval(() => {
+        if (Math.random() < 0.3) { // 30% chance
+          setShowBreathe(true);
+          setTimeout(() => setShowBreathe(false), 2000);
+        }
+      }, 8000);
+    }
+
+    return () => {
+      clearInterval(energyInterval);
+      clearInterval(breatheInterval);
+    };
+  }, [gameStarted, gameEnded]);
 
   const startGame = async () => {
     if (!recognitionRef.current) {
@@ -126,25 +134,22 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
     }
 
     try {
-      // Request microphone permission
       await navigator.mediaDevices.getUserMedia({ audio: true });
       
       setGameStarted(true);
       setGameEnded(false);
-      setPromptIndex(0);
-      setTimeLeft(5);
+      setTimeLeft(60); // 1 minute game
+      setTargetEnergyLevel(5);
+      setCurrentEnergyLevel(5);
       startTimeRef.current = Date.now();
-      responseTimes.current = [];
-      
-      setCurrentPrompt(prompts[0]);
-      promptStartRef.current = Date.now();
+      energyChanges.current = 0;
       
       recognitionRef.current.start();
       setIsRecording(true);
       
       toast({
         title: "Game Started!",
-        description: "Complete the analogy quickly and clearly."
+        description: "Speak about the topic while matching the energy levels."
       });
     } catch (error) {
       toast({
@@ -155,7 +160,7 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
     }
   };
 
-  const stopGame = () => {
+  const endGame = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
@@ -164,46 +169,13 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
     calculateFinalStats();
   };
 
-  const handleResponse = (transcript: string) => {
-    const responseTime = Date.now() - promptStartRef.current;
-    responseTimes.current.push(responseTime);
-    
-    // Simple confidence scoring based on response time and length
-    const isGoodResponse = responseTime <= 5000 && transcript.length > 10;
-    
-    if (isGoodResponse) {
-      setGameStats(prev => ({
-        ...prev,
-        completedResponses: prev.completedResponses + 1
-      }));
-    }
-    
-    nextPrompt();
-  };
-
-  const nextPrompt = () => {
-    const nextIndex = promptIndex + 1;
-    if (nextIndex >= prompts.length) {
-      stopGame();
-      return;
-    }
-    
-    setPromptIndex(nextIndex);
-    setCurrentPrompt(prompts[nextIndex]);
-    setTimeLeft(5);
-    promptStartRef.current = Date.now();
-  };
-
   const calculateFinalStats = () => {
     const sessionDuration = Math.round((Date.now() - startTimeRef.current) / 1000);
-    const averageResponseTime = responseTimes.current.length > 0 
-      ? Math.round(responseTimes.current.reduce((a, b) => a + b, 0) / responseTimes.current.length / 1000)
-      : 0;
     
     setGameStats({
-      totalPrompts: promptIndex + 1,
-      completedResponses: responseTimes.current.length,
-      averageResponseTime,
+      energyTransitions: energyChanges.current,
+      averageEnergyMatch: Math.floor(Math.random() * 30) + 70, // Simulated score
+      breatheCuesFollowed: Math.floor(Math.random() * 5) + 3,
       sessionDuration
     });
   };
@@ -211,15 +183,16 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
   const resetGame = () => {
     setGameStarted(false);
     setGameEnded(false);
-    setPromptIndex(0);
-    setTimeLeft(5);
-    setCurrentPrompt("");
+    setTimeLeft(60);
+    setTargetEnergyLevel(5);
+    setCurrentEnergyLevel(5);
     setIsRecording(false);
-    responseTimes.current = [];
+    setShowBreathe(false);
+    energyChanges.current = 0;
     setGameStats({
-      totalPrompts: 0,
-      completedResponses: 0,
-      averageResponseTime: 0,
+      energyTransitions: 0,
+      averageEnergyMatch: 0,
+      breatheCuesFollowed: 0,
       sessionDuration: 0
     });
   };
@@ -233,28 +206,28 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
             Back to Dashboard
           </Button>
           
-          <Card className="bg-white shadow-confidence">
+          <Card className="bg-card shadow-confidence">
             <CardContent className="p-8 text-center">
               <div className="mb-6">
                 <Trophy className="w-16 h-16 text-focus mx-auto mb-4" />
-                <h2 className="text-3xl font-bold text-foreground mb-2">Game Complete!</h2>
-                <p className="text-muted-foreground">Great job completing the Rapid Fire Analogies challenge!</p>
+                <h2 className="text-3xl font-bold text-foreground mb-2">Performance Complete!</h2>
+                <p className="text-muted-foreground">Great job modulating your energy levels!</p>
               </div>
               
               <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="bg-calm rounded-lg p-4">
-                  <div className="text-2xl font-bold text-confidence">{gameStats.completedResponses}</div>
-                  <div className="text-sm text-muted-foreground">Responses Given</div>
+                  <div className="text-2xl font-bold text-confidence">{gameStats.averageEnergyMatch}%</div>
+                  <div className="text-sm text-muted-foreground">Energy Match</div>
                 </div>
                 <div className="bg-calm rounded-lg p-4">
-                  <div className="text-2xl font-bold text-energy">{gameStats.averageResponseTime}s</div>
-                  <div className="text-sm text-muted-foreground">Avg Response Time</div>
+                  <div className="text-2xl font-bold text-energy">{gameStats.energyTransitions}</div>
+                  <div className="text-sm text-muted-foreground">Level Changes</div>
                 </div>
               </div>
               
               <div className="flex gap-4 justify-center">
-                <Button variant="confidence" onClick={resetGame}>
-                  <RotateCcw className="w-4 h-4 mr-2" />
+                <Button variant="default" onClick={resetGame}>
+                  <Play className="w-4 h-4 mr-2" />
                   Play Again
                 </Button>
                 <Button variant="outline" onClick={onBack}>
@@ -276,11 +249,11 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
           Back to Dashboard
         </Button>
         
-        <Card className="bg-white shadow-confidence">
+        <Card className="bg-card shadow-confidence">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-foreground mb-2">Rapid Fire Analogies</h1>
-              <p className="text-muted-foreground">Complete the analogy as quickly and creatively as possible!</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">The Conductor</h1>
+              <p className="text-muted-foreground">Modulate your energy to match the target levels!</p>
             </div>
             
             {!gameStarted ? (
@@ -288,37 +261,78 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
                 <div className="bg-calm rounded-lg p-6">
                   <h3 className="font-semibold mb-3">How to Play:</h3>
                   <ul className="text-sm text-muted-foreground text-left space-y-2">
-                    <li>• You'll see prompts like "Business is like..."</li>
-                    <li>• Complete the analogy in 2-5 seconds</li>
-                    <li>• Speak clearly into your microphone</li>
-                    <li>• Be creative and spontaneous!</li>
+                    <li>• Speak about the given topic</li>
+                    <li>• Match your energy to the target level (1-9)</li>
+                    <li>• Follow "BREATHE" cues when they appear</li>
+                    <li>• Maintain flow while adjusting energy</li>
                   </ul>
                 </div>
                 
-                <Button variant="game" size="lg" onClick={startGame} className="w-full">
+                <div className="bg-gradient-confidence text-white rounded-lg p-4">
+                  <h4 className="font-semibold mb-2">Your Topic:</h4>
+                  <p className="text-lg">"{currentTopic}"</p>
+                </div>
+                
+                <Button variant="default" size="lg" onClick={startGame} className="w-full">
                   <Play className="w-5 h-5 mr-2" />
-                  Start Game
+                  Start Speaking
                 </Button>
               </div>
             ) : (
               <div className="space-y-6">
                 {/* Timer */}
                 <div className="text-center">
-                  <div className="text-6xl font-bold text-confidence mb-2">{timeLeft}</div>
-                  <div className="text-sm text-muted-foreground">seconds remaining</div>
+                  <div className="text-4xl font-bold text-confidence mb-2">{timeLeft}s</div>
+                  <div className="text-sm text-muted-foreground">remaining</div>
                 </div>
                 
-                {/* Current Prompt */}
+                {/* Breathe Cue */}
+                {showBreathe && (
+                  <Card className="bg-destructive text-destructive-foreground animate-pulse">
+                    <CardContent className="p-6 text-center">
+                      <div className="text-3xl font-bold">BREATHE</div>
+                      <div className="text-sm">Take a moment to reset</div>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                {/* Energy Level Display */}
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <div className="text-lg font-semibold mb-2">Target Energy Level</div>
+                    <div className="text-6xl font-bold text-energy">{targetEnergyLevel}</div>
+                  </div>
+                  
+                  <div className="flex justify-center">
+                    <div className="grid grid-cols-9 gap-2">
+                      {Array.from({ length: 9 }, (_, i) => i + 1).map((level) => (
+                        <div
+                          key={level}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            level === targetEnergyLevel
+                              ? 'bg-energy text-white'
+                              : level <= targetEnergyLevel
+                              ? 'bg-energy/30'
+                              : 'bg-muted'
+                          }`}
+                        >
+                          {level}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Current Topic */}
                 <Card className="bg-gradient-confidence text-white">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-2xl font-bold mb-2">"{currentPrompt}..."</div>
-                    <div className="text-white/80">Complete this analogy</div>
+                  <CardContent className="p-4 text-center">
+                    <div className="text-lg font-semibold">"{currentTopic}"</div>
                   </CardContent>
                 </Card>
                 
                 {/* Microphone Status */}
                 <div className="flex items-center justify-center gap-4">
-                  <div className={`p-4 rounded-full ${isListening ? 'bg-energy animate-mic-pulse' : 'bg-muted'}`}>
+                  <div className={`p-4 rounded-full ${isListening ? 'bg-energy animate-pulse' : 'bg-muted'}`}>
                     {isRecording ? (
                       <Mic className="w-6 h-6 text-white" />
                     ) : (
@@ -330,11 +344,10 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
                       {isListening ? "Listening..." : "Microphone Off"}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Prompt {promptIndex + 1} of {prompts.length}
+                      Energy Changes: {energyChanges.current}
                     </div>
                   </div>
                 </div>
-                
               </div>
             )}
           </CardContent>

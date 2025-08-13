@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Hero } from "@/components/Hero";
 import { GameDashboard } from "@/components/GameDashboard";
 import { RapidFireGame } from "@/components/RapidFireGame";
+import { ConductorGame } from "@/components/ConductorGame";
+import { TripleStepGame } from "@/components/TripleStepGame";
 
 type AppState = "home" | "dashboard" | "rapid-fire" | "conductor" | "triple-step";
 
@@ -18,10 +20,10 @@ const Index = () => {
         setCurrentView("rapid-fire");
         break;
       case "conductor":
-        // TODO: Implement Conductor game
+        setCurrentView("conductor");
         break;
       case "triple-step":
-        // TODO: Implement Triple Step game
+        setCurrentView("triple-step");
         break;
     }
   };
@@ -41,6 +43,10 @@ const Index = () => {
       return <GameDashboard onGameSelect={handleGameSelect} onBack={handleBackToHome} />;
     case "rapid-fire":
       return <RapidFireGame onBack={handleBackToDashboard} />;
+    case "conductor":
+      return <ConductorGame onBack={handleBackToDashboard} />;
+    case "triple-step":
+      return <TripleStepGame onBack={handleBackToDashboard} />;
     default:
       return <Hero onStartTraining={handleStartTraining} />;
   }
