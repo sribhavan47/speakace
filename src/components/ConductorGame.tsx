@@ -199,38 +199,38 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
 
   if (gameEnded) {
     return (
-      <div className="min-h-screen bg-gradient-calm py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="container mx-auto px-6 max-w-2xl">
-          <Button variant="outline" onClick={onBack} className="mb-6">
+          <Button variant="outline" onClick={onBack} className="mb-6 border-border bg-card text-card-foreground hover:bg-muted">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
           
-          <Card className="bg-card shadow-confidence">
+          <Card className="bg-card border-border">
             <CardContent className="p-8 text-center">
               <div className="mb-6">
-                <Trophy className="w-16 h-16 text-focus mx-auto mb-4" />
+                <Trophy className="w-16 h-16 text-accent mx-auto mb-4" />
                 <h2 className="text-3xl font-bold text-foreground mb-2">Performance Complete!</h2>
                 <p className="text-muted-foreground">Great job modulating your energy levels!</p>
               </div>
               
               <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="bg-calm rounded-lg p-4">
-                  <div className="text-2xl font-bold text-confidence">{gameStats.averageEnergyMatch}%</div>
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="text-2xl font-bold text-primary">{gameStats.averageEnergyMatch}%</div>
                   <div className="text-sm text-muted-foreground">Energy Match</div>
                 </div>
-                <div className="bg-calm rounded-lg p-4">
-                  <div className="text-2xl font-bold text-energy">{gameStats.energyTransitions}</div>
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="text-2xl font-bold text-accent">{gameStats.energyTransitions}</div>
                   <div className="text-sm text-muted-foreground">Level Changes</div>
                 </div>
               </div>
               
               <div className="flex gap-4 justify-center">
-                <Button variant="default" onClick={resetGame}>
+                <Button onClick={resetGame} className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   <Play className="w-4 h-4 mr-2" />
                   Play Again
                 </Button>
-                <Button variant="outline" onClick={onBack}>
+                <Button variant="outline" onClick={onBack} className="border-border text-foreground hover:bg-muted">
                   Try Another Game
                 </Button>
               </div>
@@ -242,14 +242,14 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-calm py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-6 max-w-2xl">
-        <Button variant="outline" onClick={onBack} className="mb-6">
+        <Button variant="outline" onClick={onBack} className="mb-6 border-border bg-card text-card-foreground hover:bg-muted">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Button>
         
-        <Card className="bg-card shadow-confidence">
+        <Card className="bg-card border-border">
           <CardContent className="p-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-foreground mb-2">The Conductor</h1>
@@ -258,8 +258,8 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
             
             {!gameStarted ? (
               <div className="text-center space-y-6">
-                <div className="bg-calm rounded-lg p-6">
-                  <h3 className="font-semibold mb-3">How to Play:</h3>
+                <div className="bg-muted rounded-lg p-6">
+                  <h3 className="font-semibold text-foreground mb-3">How to Play:</h3>
                   <ul className="text-sm text-muted-foreground text-left space-y-2">
                     <li>• Speak about the given topic</li>
                     <li>• Match your energy to the target level (1-9)</li>
@@ -268,12 +268,12 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
                   </ul>
                 </div>
                 
-                <div className="bg-gradient-confidence text-white rounded-lg p-4">
+                <div className="bg-primary text-primary-foreground rounded-lg p-4">
                   <h4 className="font-semibold mb-2">Your Topic:</h4>
                   <p className="text-lg">"{currentTopic}"</p>
                 </div>
                 
-                <Button variant="default" size="lg" onClick={startGame} className="w-full">
+                <Button size="lg" onClick={startGame} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                   <Play className="w-5 h-5 mr-2" />
                   Start Speaking
                 </Button>
@@ -282,7 +282,7 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
               <div className="space-y-6">
                 {/* Timer */}
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-confidence mb-2">{timeLeft}s</div>
+                  <div className="text-4xl font-bold text-primary mb-2">{timeLeft}s</div>
                   <div className="text-sm text-muted-foreground">remaining</div>
                 </div>
                 
@@ -299,8 +299,8 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
                 {/* Energy Level Display */}
                 <div className="space-y-4">
                   <div className="text-center">
-                    <div className="text-lg font-semibold mb-2">Target Energy Level</div>
-                    <div className="text-6xl font-bold text-energy">{targetEnergyLevel}</div>
+                    <div className="text-lg font-semibold text-foreground mb-2">Target Energy Level</div>
+                    <div className="text-6xl font-bold text-accent">{targetEnergyLevel}</div>
                   </div>
                   
                   <div className="flex justify-center">
@@ -310,10 +310,10 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
                           key={level}
                           className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                             level === targetEnergyLevel
-                              ? 'bg-energy text-white'
+                              ? 'bg-accent text-accent-foreground'
                               : level <= targetEnergyLevel
-                              ? 'bg-energy/30'
-                              : 'bg-muted'
+                              ? 'bg-accent/30 text-foreground'
+                              : 'bg-muted text-muted-foreground'
                           }`}
                         >
                           {level}
@@ -324,7 +324,7 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
                 </div>
                 
                 {/* Current Topic */}
-                <Card className="bg-gradient-confidence text-white">
+                <Card className="bg-primary text-primary-foreground">
                   <CardContent className="p-4 text-center">
                     <div className="text-lg font-semibold">"{currentTopic}"</div>
                   </CardContent>
@@ -332,15 +332,15 @@ export const ConductorGame = ({ onBack }: ConductorGameProps) => {
                 
                 {/* Microphone Status */}
                 <div className="flex items-center justify-center gap-4">
-                  <div className={`p-4 rounded-full ${isListening ? 'bg-energy animate-pulse' : 'bg-muted'}`}>
+                  <div className={`p-4 rounded-full ${isListening ? 'bg-accent animate-pulse' : 'bg-muted'}`}>
                     {isRecording ? (
-                      <Mic className="w-6 h-6 text-white" />
+                      <Mic className="w-6 h-6 text-accent-foreground" />
                     ) : (
                       <MicOff className="w-6 h-6 text-muted-foreground" />
                     )}
                   </div>
                   <div className="text-center">
-                    <div className="font-medium">
+                    <div className="font-medium text-foreground">
                       {isListening ? "Listening..." : "Microphone Off"}
                     </div>
                     <div className="text-sm text-muted-foreground">

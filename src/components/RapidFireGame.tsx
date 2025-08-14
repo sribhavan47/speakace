@@ -226,38 +226,38 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
 
   if (gameEnded) {
     return (
-      <div className="min-h-screen bg-gradient-calm py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="container mx-auto px-6 max-w-2xl">
-          <Button variant="outline" onClick={onBack} className="mb-6">
+          <Button variant="outline" onClick={onBack} className="mb-6 border-border bg-card text-card-foreground hover:bg-muted">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
           
-          <Card className="bg-white shadow-confidence">
+          <Card className="bg-card border-border">
             <CardContent className="p-8 text-center">
               <div className="mb-6">
-                <Trophy className="w-16 h-16 text-focus mx-auto mb-4" />
+                <Trophy className="w-16 h-16 text-accent mx-auto mb-4" />
                 <h2 className="text-3xl font-bold text-foreground mb-2">Game Complete!</h2>
                 <p className="text-muted-foreground">Great job completing the Rapid Fire Analogies challenge!</p>
               </div>
               
               <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="bg-calm rounded-lg p-4">
-                  <div className="text-2xl font-bold text-confidence">{gameStats.completedResponses}</div>
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="text-2xl font-bold text-primary">{gameStats.completedResponses}</div>
                   <div className="text-sm text-muted-foreground">Responses Given</div>
                 </div>
-                <div className="bg-calm rounded-lg p-4">
-                  <div className="text-2xl font-bold text-energy">{gameStats.averageResponseTime}s</div>
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="text-2xl font-bold text-accent">{gameStats.averageResponseTime}s</div>
                   <div className="text-sm text-muted-foreground">Avg Response Time</div>
                 </div>
               </div>
               
               <div className="flex gap-4 justify-center">
-                <Button variant="confidence" onClick={resetGame}>
+                <Button onClick={resetGame} className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   <RotateCcw className="w-4 h-4 mr-2" />
                   Play Again
                 </Button>
-                <Button variant="outline" onClick={onBack}>
+                <Button variant="outline" onClick={onBack} className="border-border text-foreground hover:bg-muted">
                   Try Another Game
                 </Button>
               </div>
@@ -269,14 +269,14 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-calm py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-6 max-w-2xl">
-        <Button variant="outline" onClick={onBack} className="mb-6">
+        <Button variant="outline" onClick={onBack} className="mb-6 border-border bg-card text-card-foreground hover:bg-muted">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Button>
         
-        <Card className="bg-white shadow-confidence">
+        <Card className="bg-card border-border">
           <CardContent className="p-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-foreground mb-2">Rapid Fire Analogies</h1>
@@ -285,8 +285,8 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
             
             {!gameStarted ? (
               <div className="text-center space-y-6">
-                <div className="bg-calm rounded-lg p-6">
-                  <h3 className="font-semibold mb-3">How to Play:</h3>
+                <div className="bg-muted rounded-lg p-6">
+                  <h3 className="font-semibold text-foreground mb-3">How to Play:</h3>
                   <ul className="text-sm text-muted-foreground text-left space-y-2">
                     <li>• You'll see prompts like "Business is like..."</li>
                     <li>• Complete the analogy in 2-5 seconds</li>
@@ -295,7 +295,7 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
                   </ul>
                 </div>
                 
-                <Button variant="game" size="lg" onClick={startGame} className="w-full">
+                <Button size="lg" onClick={startGame} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                   <Play className="w-5 h-5 mr-2" />
                   Start Game
                 </Button>
@@ -304,29 +304,29 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
               <div className="space-y-6">
                 {/* Timer */}
                 <div className="text-center">
-                  <div className="text-6xl font-bold text-confidence mb-2">{timeLeft}</div>
+                  <div className="text-6xl font-bold text-primary mb-2">{timeLeft}</div>
                   <div className="text-sm text-muted-foreground">seconds remaining</div>
                 </div>
                 
                 {/* Current Prompt */}
-                <Card className="bg-gradient-confidence text-white">
+                <Card className="bg-primary text-primary-foreground">
                   <CardContent className="p-6 text-center">
                     <div className="text-2xl font-bold mb-2">"{currentPrompt}..."</div>
-                    <div className="text-white/80">Complete this analogy</div>
+                    <div className="text-primary-foreground/80">Complete this analogy</div>
                   </CardContent>
                 </Card>
                 
                 {/* Microphone Status */}
                 <div className="flex items-center justify-center gap-4">
-                  <div className={`p-4 rounded-full ${isListening ? 'bg-energy animate-mic-pulse' : 'bg-muted'}`}>
+                  <div className={`p-4 rounded-full ${isListening ? 'bg-accent animate-pulse' : 'bg-muted'}`}>
                     {isRecording ? (
-                      <Mic className="w-6 h-6 text-white" />
+                      <Mic className="w-6 h-6 text-accent-foreground" />
                     ) : (
                       <MicOff className="w-6 h-6 text-muted-foreground" />
                     )}
                   </div>
                   <div className="text-center">
-                    <div className="font-medium">
+                    <div className="font-medium text-foreground">
                       {isListening ? "Listening..." : "Microphone Off"}
                     </div>
                     <div className="text-sm text-muted-foreground">

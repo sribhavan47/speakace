@@ -33,13 +33,13 @@ export const GameCard = ({
   };
 
   return (
-    <Card className="group relative overflow-hidden border-0 shadow-soft hover:shadow-confidence transition-all duration-300 hover:scale-105 bg-gradient-to-br from-white to-calm">
+    <Card className="group relative overflow-hidden border-border bg-card hover:bg-card/90 transition-all duration-300 hover:scale-105 animate-fade-in">
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-confidence/5 to-energy/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
       <CardHeader className="relative z-10">
         <div className="flex items-start justify-between">
-          <div className="p-3 rounded-lg bg-gradient-confidence text-white shadow-confidence">
+          <div className="p-3 rounded-lg bg-primary text-primary-foreground">
             <Icon className="w-6 h-6" />
           </div>
           
@@ -54,7 +54,7 @@ export const GameCard = ({
           </div>
         </div>
         
-        <CardTitle className="text-xl font-bold text-foreground group-hover:text-confidence transition-colors">
+        <CardTitle className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
           {title}
         </CardTitle>
         
@@ -79,8 +79,7 @@ export const GameCard = ({
           
           {/* Play Button */}
           <Button 
-            variant="game"
-            className="w-full font-semibold"
+            className="w-full font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
             onClick={onPlay}
             disabled={isLocked}
           >
@@ -100,7 +99,7 @@ export const GameCard = ({
       </CardContent>
       
       {isLocked && (
-        <div className="absolute inset-0 bg-muted/50 backdrop-blur-sm flex items-center justify-center rounded-lg">
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center rounded-lg">
           <div className="text-center">
             <Target className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
             <p className="text-sm font-medium text-muted-foreground">Complete previous games to unlock</p>
