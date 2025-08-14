@@ -43,7 +43,7 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-calm py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -51,7 +51,7 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
             <Button 
               variant="outline" 
               onClick={onBack}
-              className="bg-white/80 backdrop-blur-sm border-0 hover:bg-white"
+              className="border-border bg-card text-card-foreground hover:bg-muted"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
@@ -63,40 +63,40 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
             </div>
           </div>
           
-          <div className="flex items-center gap-2 bg-white rounded-lg p-3 shadow-soft">
-            <Trophy className="w-5 h-5 text-focus" />
-            <span className="font-semibold text-foreground">Level 1 Speaker</span>
+          <div className="flex items-center gap-2 bg-card border border-border rounded-lg p-3">
+            <Trophy className="w-5 h-5 text-accent" />
+            <span className="font-semibold text-card-foreground">Level 1 Speaker</span>
           </div>
         </div>
 
         {/* Progress Overview */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-soft">
+          <Card className="bg-card border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Games Completed</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-confidence">0</div>
+              <div className="text-2xl font-bold text-primary">0</div>
               <p className="text-xs text-muted-foreground">out of 3 games</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-soft">
+          <Card className="bg-card border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Total Practice Time</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-energy">0m</div>
+              <div className="text-2xl font-bold text-accent">0m</div>
               <p className="text-xs text-muted-foreground">Start your first session</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-soft">
+          <Card className="bg-card border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Confidence Score</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-focus">--</div>
+              <div className="text-2xl font-bold text-accent">--</div>
               <p className="text-xs text-muted-foreground">Complete a game to see score</p>
             </CardContent>
           </Card>
@@ -120,34 +120,34 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
         </div>
 
         {/* How It Works */}
-        <div className="mt-12 bg-white rounded-2xl p-8 shadow-soft">
+        <div className="mt-12 bg-card border border-border rounded-2xl p-8">
           <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
-            <Brain className="w-6 h-6 text-confidence" />
+            <Brain className="w-6 h-6 text-primary" />
             How AI Training Works
           </h2>
           
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-confidence rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold">1</span>
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-primary-foreground font-bold">1</span>
               </div>
-              <h3 className="font-semibold mb-2">Practice Speaking</h3>
+              <h3 className="font-semibold text-foreground mb-2">Practice Speaking</h3>
               <p className="text-sm text-muted-foreground">Use your microphone to practice with real-time games and challenges</p>
             </div>
             
             <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-energy rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold">2</span>
+              <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-accent-foreground font-bold">2</span>
               </div>
-              <h3 className="font-semibold mb-2">Get AI Feedback</h3>
+              <h3 className="font-semibold text-foreground mb-2">Get AI Feedback</h3>
               <p className="text-sm text-muted-foreground">Receive instant analysis of your timing, energy, and speaking patterns</p>
             </div>
             
             <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-focus to-confidence rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold">3</span>
+              <div className="w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-primary-foreground font-bold">3</span>
               </div>
-              <h3 className="font-semibold mb-2">Track Progress</h3>
+              <h3 className="font-semibold text-foreground mb-2">Track Progress</h3>
               <p className="text-sm text-muted-foreground">Monitor improvement over time with detailed analytics and suggestions</p>
             </div>
           </div>
