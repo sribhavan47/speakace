@@ -1,92 +1,110 @@
 import { Button } from "@/components/ui/button";
-import { Mic, Brain, Trophy, ArrowRight } from "lucide-react";
-import heroImage from "@/assets/hero-speaking.jpg";
+import { Mic, Brain, Trophy, ArrowRight, Play } from "lucide-react";
 
 export const Hero = ({ onStartTraining }: { onStartTraining: () => void }) => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,theme(colors.confidence),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,theme(colors.energy),transparent_50%)]" />
+    <div className="relative min-h-screen bg-background overflow-hidden">
+      {/* Background Geometric Elements */}
+      <div className="absolute inset-0">
+        {/* Large orange-like shapes inspired by the reference */}
+        <div className="absolute top-20 right-0 w-96 h-96 bg-gradient-to-br from-primary via-primary/80 to-accent/60 rounded-full blur-3xl opacity-20 transform translate-x-32 -translate-y-16" />
+        <div className="absolute top-40 right-20 w-72 h-72 bg-gradient-to-br from-accent via-accent/80 to-primary/60 rounded-full blur-2xl opacity-30 transform rotate-45" />
+        <div className="absolute top-60 right-40 w-48 h-48 bg-gradient-to-br from-primary/60 to-accent/80 rounded-full blur-xl opacity-40 transform -rotate-12" />
+        
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
       </div>
       
-      <div className="container mx-auto px-6 py-20 relative z-10">
+      <div className="relative z-10 container mx-auto px-6 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
-          <div className="text-center lg:text-left animate-slide-up">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white/20">
-              <Brain className="w-4 h-4 text-white" />
-              <span className="text-white/90 text-sm font-medium">AI-Powered Training</span>
+          <div className="space-y-8">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm rounded-full px-4 py-2 border border-primary/20">
+              <Brain className="w-4 h-4 text-primary" />
+              <span className="text-primary text-sm font-medium">AI-Powered Training</span>
             </div>
             
-            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Master Public
-              <span className="block bg-gradient-to-r from-focus to-white bg-clip-text text-transparent">
-                Speaking
-              </span>
-            </h1>
+            {/* Main Heading */}
+            <div className="space-y-4">
+              <h1 className="text-6xl lg:text-7xl font-bold text-foreground leading-tight">
+                Master Public
+                <span className="block bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Speaking
+                </span>
+              </h1>
+              
+              <p className="text-xl text-muted-foreground max-w-lg leading-relaxed">
+                Transform your speaking skills with AI-powered games that provide real-time feedback, 
+                track your progress, and build unshakeable confidence.
+              </p>
+            </div>
             
-            <p className="text-xl text-white/80 mb-8 max-w-lg">
-              Transform your speaking skills with AI-powered games that provide real-time feedback, 
-              track your progress, and build unshakeable confidence.
-            </p>
-            
+            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
-                variant="hero" 
-                size="lg" 
                 onClick={onStartTraining}
-                className="group"
+                size="lg" 
+                className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg"
               >
-                <Mic className="w-5 h-5 mr-2 group-hover:animate-mic-pulse" />
+                <Mic className="w-5 h-5 mr-2" />
                 Start Training
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Button variant="outline" size="lg" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-primary/30 text-foreground hover:bg-primary/10 px-8 py-4 text-lg"
+              >
+                <Play className="w-4 h-4 mr-2" />
                 Watch Demo
               </Button>
             </div>
             
             {/* Stats */}
-            <div className="flex justify-center lg:justify-start gap-8 mt-12">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">3</div>
-                <div className="text-white/60 text-sm">Training Games</div>
+            <div className="flex gap-12 pt-8">
+              <div>
+                <div className="text-3xl font-bold text-foreground">3</div>
+                <div className="text-muted-foreground text-sm">Training Games</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">AI</div>
-                <div className="text-white/60 text-sm">Real-time Feedback</div>
+              <div>
+                <div className="text-3xl font-bold text-primary">AI</div>
+                <div className="text-muted-foreground text-sm">Real-time Feedback</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white">∞</div>
-                <div className="text-white/60 text-sm">Progress Tracking</div>
+              <div>
+                <div className="text-3xl font-bold text-accent">∞</div>
+                <div className="text-muted-foreground text-sm">Progress Tracking</div>
               </div>
             </div>
           </div>
           
-          {/* Hero Image */}
-          <div className="relative lg:justify-self-end animate-slide-up">
-            <div className="relative">
-              <img 
-                src={heroImage} 
-                alt="AI-powered public speaking training platform"
-                className="rounded-2xl shadow-2xl w-full max-w-lg mx-auto"
-              />
-              
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 bg-white rounded-full p-3 shadow-confidence animate-pulse-confidence">
-                <Mic className="w-6 h-6 text-confidence" />
+          {/* Right side - Visual Elements */}
+          <div className="relative">
+            {/* Main visual element - abstract representation */}
+            <div className="relative w-full h-96 flex items-center justify-center">
+              {/* Central element */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-32 h-32 bg-gradient-to-br from-primary to-accent rounded-full shadow-2xl flex items-center justify-center">
+                  <Mic className="w-16 h-16 text-white" />
+                </div>
               </div>
               
-              <div className="absolute -bottom-4 -right-4 bg-white rounded-full p-3 shadow-energy animate-pulse-confidence animation-delay-1000">
-                <Trophy className="w-6 h-6 text-energy" />
+              {/* Floating elements */}
+              <div className="absolute top-8 left-8 w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center animate-pulse">
+                <Brain className="w-8 h-8 text-primary" />
               </div>
+              
+              <div className="absolute bottom-8 right-8 w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center animate-pulse delay-500">
+                <Trophy className="w-8 h-8 text-accent" />
+              </div>
+              
+              <div className="absolute top-16 right-16 w-12 h-12 bg-primary/10 rounded-full animate-pulse delay-1000" />
+              <div className="absolute bottom-16 left-16 w-8 h-8 bg-accent/10 rounded-full animate-pulse delay-700" />
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
