@@ -423,33 +423,3 @@ router.post('/reset-password', [
 }));
 
 export default router;
-
-
-    res.json({
-      success: true,
-      message: 'Password reset successfully'
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid or expired reset token'
-    });
-  }
-}));
-
-export default router;
-
-
-    res.json({
-      success: true,
-      message: 'Password reset successfully'
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid or expired reset token'
-    });
-  }
-}));
-
-export default router;
