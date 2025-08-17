@@ -1,73 +1,209 @@
-# Welcome to your Lovable project
+SpeakAce - AI-Powered Public Speaking Training Platform
+SpeakAce is a gamified AI-driven platform designed to help individuals improve public speaking skills through interactive games, real-time speech analysis, and personalized AI feedback.
 
-## Project info
+🚀 Features
 
-**URL**: https://lovable.dev/projects/75a01c31-c67d-42d4-bac8-cd0863f12c82
+🎮 3 Interactive Games: Rapid Fire Analogies, The Conductor, Triple Step Integration
+🧠 AI-Powered Feedback: Clarity, energy modulation, coherence
+📊 Progress Tracking: Track stats, achievements, and improvement trends
+🔒 Secure Authentication: JWT-based sessions, bcrypt password hashing
+⚡ Modern Tech Stack: React + Vite frontend, Node.js + Express backend, MongoDB database
 
-## How can I edit this code?
 
-There are several ways of editing your application.
+🛠️ Tech Stack
+Frontend
 
-**Use Lovable**
+React 18 + TypeScript
+Vite (build tool)
+Shadcn UI + Tailwind CSS
+React Query + Context API (state management)
+React Router v6 (routing)
+Custom Speech Recognition Hook (useSpeechRecognition)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/75a01c31-c67d-42d4-bac8-cd0863f12c82) and start prompting.
+Backend
 
-Changes made via Lovable will be committed automatically to this repo.
+Node.js + Express.js
+MongoDB + Mongoose ODM
+JWT Authentication + bcryptjs
+AI Integration: Google Gemini API
+Socket.IO (real-time, planned)
+Winston Logger
+Helmet + CORS + Rate Limiting (security)
 
-**Use your preferred IDE**
+Database
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Collections:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Users → Profile, achievements, stats
+GameSessions → Performance data, timestamps
+Analytics → Aggregated performance metrics
 
-Follow these steps:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+📂 Project Structure
+/frontend        → React UI, games, dashboard
+/backend         → Express API, AI integration, database
+/docs            → Documentation files (this README contains merged docs)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+⚙️ Installation & Running Locally
+1. Clone the Repository
+bashgit clone https://github.com/your-org/speakace.git
+cd speakace
+2. Install Dependencies
+bash# Frontend
+cd frontend
+npm install
+
+# Backend
+cd ../backend
+npm install
+3. Configure Environment Variables
+Create .env in backend folder:
+MONGO_URI=your-mongodb-uri
+JWT_SECRET=your-secret
+GEMINI_API_KEY=your-gemini-api-key
+4. Run Development Servers
+bash# Frontend
+cd frontend
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+# Backend
+cd backend
+npm run dev
+5. Access the App
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Frontend → http://localhost:5173
+Backend API → http://localhost:5000
 
-**Use GitHub Codespaces**
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+🎮 Game Design
+1. Rapid Fire Analogies
 
-## What technologies are used for this project?
+Objective: Train quick thinking & creativity.
+Gameplay: User is given a word → must generate analogy within 10 sec.
+Scoring:
 
-This project is built with:
+Creativity = 50%
+Relevance = 30%
+Delivery speed = 20%
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
 
-## How can I deploy this project?
+AI Feedback: Coherence, vocabulary range, fluency.
 
-Simply open [Lovable](https://lovable.dev/projects/75a01c31-c67d-42d4-bac8-cd0863f12c82) and click on Share -> Publish.
 
-## Can I connect a custom domain to my Lovable project?
+2. The Conductor
 
-Yes, you can!
+Objective: Improve energy modulation & vocal tone.
+Gameplay: User must speak with varying intonation guided by AI.
+Scoring:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Energy variation = 40%
+Vocal clarity = 40%
+Confidence = 20%
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+AI Feedback: Monotony detection, enthusiasm scoring.
+
+
+3. Triple Step Integration
+
+Objective: Build structured communication.
+Gameplay:
+
+Step 1 → Intro (30 sec)
+Step 2 → Body (60 sec)
+Step 3 → Conclusion (30 sec)
+
+
+Scoring:
+
+Structure = 50%
+Coherence = 30%
+Timing = 20%
+
+
+AI Feedback: Logical flow, clarity of transitions.
+
+
+📊 Example User Flow
+
+Register/Login → Secure session with JWT
+Choose Game → Session created
+Play Game → Speech recorded & analyzed
+AI Feedback → Real-time performance insights
+Results Stored → Stats updated in MongoDB
+Dashboard → Track progress & achievements
+
+
+🏗️ Architecture Overview
+High-Level System Architecture
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │    Backend      │    │    Database     │
+│   (React)       │◄──►│   (Express)     │◄──►│   (MongoDB)     │
+│ • Game UI       │    │ • API Routes    │    │ • Users         │
+│ • Speech Rec    │    │ • AI Services   │    │ • Sessions      │
+│ • State Mgmt    │    │ • Auth          │    │ • Analytics     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+
+🚀 Deployment Guide
+Backend Deployment (Node.js + MongoDB)
+
+Provision a server (e.g., AWS EC2, DigitalOcean, Render)
+Install Node.js and MongoDB (or use MongoDB Atlas)
+Copy backend files
+Configure .env
+Install dependencies:
+bashnpm install
+
+Run with:
+bashnpm run start
+
+(Optional) Use PM2 for process management
+
+
+Frontend Deployment (React + Vite)
+
+Build static assets:
+bashnpm run build
+
+Serve with:
+
+Vercel (recommended)
+Netlify
+Static hosting (Nginx/Apache)
+
+
+
+
+Docker Deployment
+
+Build images:
+bashdocker-compose build
+
+Run containers:
+bashdocker-compose up -d
+
+
+
+🔐 Security
+
+JWT tokens for session management
+Bcrypt password hashing
+Helmet + CORS + Rate limiting
+Environment variables for sensitive keys
+
+
+⚡ Performance & Scalability
+
+Client-side caching with React Query
+Indexed queries in MongoDB
+Compression middleware
+Future-ready:
+
+Socket.IO for real-time feedback
+Horizontal scaling with load balancers
+CDN for static assets
+
+
+
