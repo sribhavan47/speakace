@@ -109,14 +109,8 @@ export const TripleStepGame = ({ onBack }: TripleStepGameProps) => {
             // Time's up for current word, auto-advance
             setTimeout(() => {
               if (!isProcessingResponse) {
-                // Automatically count the first 5 words as integrated for engagement
-                if (currentWordIndex < 5) {
-                  setGameStats(prev => ({
-                    ...prev,
-                    wordsIntegrated: Math.min(6, prev.wordsIntegrated + 1),
-                    integrationSuccess: Math.min(5, prev.integrationSuccess + 1)
-                  }));
-                }
+                // Don't automatically count words - only count actual user integration
+                console.log('Time ran out for word', currentWordIndex + 1);
                 nextWord();
               }
             }, 2000); // Wait 2 seconds before auto-advancing
@@ -147,7 +141,7 @@ export const TripleStepGame = ({ onBack }: TripleStepGameProps) => {
     if (!isInitialized) {
       toast({
         title: "Speech Recognition Unavailable",
-        description: "Please check your browser compatibility.",
+        description: "Your browser doesn't support speech recognition. Please try a different browser or enable microphone permissions.",
         variant: "destructive"
       });
       return;
@@ -203,7 +197,7 @@ export const TripleStepGame = ({ onBack }: TripleStepGameProps) => {
       console.error('Error starting game:', error);
       toast({
         title: "Game Start Error",
-        description: "Failed to start the game. Please try again.",
+        description: "Failed to start the game. Please check your connection and try again.",
         variant: "destructive"
       });
     }

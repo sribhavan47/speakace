@@ -86,13 +86,11 @@ export const useSpeechRecognition = (options: UseSpeechRecognitionOptions = {}):
         recognitionRef.current.onerror = (event: any) => {
           console.error('Speech recognition error:', event.error);
           setIsListening(false);
-          const errorMessage = `Error: ${event.error}. Please check your microphone and try again.`;
-          onError?.(errorMessage);
-          toast({
-            title: "Speech Recognition Error",
-            description: errorMessage,
-            variant: "destructive"
-          });
+          // Handle error silently - don't show toast to user
+          onError?.(event.error);
+          
+          // Automatically restart recognition if game is still running
+          // This will be handled by the game components
         };
 
         setIsInitialized(true);
@@ -101,6 +99,7 @@ export const useSpeechRecognition = (options: UseSpeechRecognitionOptions = {}):
       } catch (micError) {
         console.error('Microphone access error:', micError);
         setMicrophoneAvailable(false);
+        // Show user-friendly error for microphone access issues
         toast({
           title: "Microphone Access Required",
           description: "Please allow microphone access in your browser settings to use speech recognition.",
@@ -110,6 +109,7 @@ export const useSpeechRecognition = (options: UseSpeechRecognitionOptions = {}):
 
     } catch (error) {
       console.error('Speech recognition initialization error:', error);
+      // Show user-friendly error for initialization issues
       toast({
         title: "Initialization Error",
         description: "Failed to initialize speech recognition. Please refresh the page and try again.",
@@ -139,11 +139,7 @@ export const useSpeechRecognition = (options: UseSpeechRecognitionOptions = {}):
       return true;
     } catch (error) {
       setMicrophoneAvailable(false);
-      toast({
-        title: "Microphone Test Failed",
-        description: "Please check your microphone permissions and try again.",
-        variant: "destructive"
-      });
+      // Handle microphone test failure silently - don't show toast to user
       return false;
     }
   }, [isInitialized, initializeSpeechRecognition, toast]);
@@ -156,6 +152,7 @@ export const useSpeechRecognition = (options: UseSpeechRecognitionOptions = {}):
       }
       
       if (!recognitionRef.current) {
+        // Show user-friendly error for speech recognition unavailability
         toast({
           title: "Speech Recognition Unavailable",
           description: "Please check your browser compatibility and microphone permissions.",
@@ -166,6 +163,7 @@ export const useSpeechRecognition = (options: UseSpeechRecognitionOptions = {}):
     }
 
     if (!microphoneAvailable) {
+      // Show user-friendly error for microphone unavailability
       toast({
         title: "Microphone Not Available",
         description: "Please allow microphone access in your browser settings and refresh the page.",
@@ -178,11 +176,7 @@ export const useSpeechRecognition = (options: UseSpeechRecognitionOptions = {}):
       recognitionRef.current.start();
     } catch (error) {
       console.error('Error starting speech recognition:', error);
-      toast({
-        title: "Start Error",
-        description: "Failed to start speech recognition. Please try again.",
-        variant: "destructive"
-      });
+      // Handle start error silently - don't show toast to user
     }
   }, [isInitialized, microphoneAvailable, initializeSpeechRecognition, toast]);
 

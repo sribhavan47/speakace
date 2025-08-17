@@ -114,18 +114,11 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
         setTimeLeft(prev => {
           if (prev <= 1) {
             // Time's up for current prompt, auto-advance
-            setTimeout(() => {
-              if (!isProcessingResponse) {
-                // Automatically count the first 8 prompts as completed for engagement
-                if (promptIndex < 8) {
-                  setGameStats(prev => ({
-                    ...prev,
-                    completedResponses: Math.min(8, prev.completedResponses + 1)
-                  }));
-                }
-                nextPrompt();
-              }
-            }, 1000); // Wait 1 second before auto-advancing
+            if (!isProcessingResponse) {
+              // Don't automatically count responses - only count actual user input
+              console.log('Time ran out for prompt', promptIndex + 1);
+              nextPrompt();
+            }
             return 0;
           }
           return prev - 1;
@@ -139,7 +132,7 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
     if (!isInitialized) {
       toast({
         title: "Speech Recognition Unavailable",
-        description: "Please check your browser compatibility.",
+        description: "Your browser doesn't support speech recognition. Please try a different browser or enable microphone permissions.",
         variant: "destructive"
       });
       return;
@@ -193,7 +186,7 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
       console.error('Error starting game:', error);
       toast({
         title: "Game Start Error",
-        description: "Failed to start the game. Please try again.",
+        description: "Failed to start the game. Please check your connection and try again.",
         variant: "destructive"
       });
     }
@@ -211,20 +204,20 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
     if (sessionId) {
       try {
         const performance = {
-          score: Math.round((finalStats.completedResponses / finalStats.totalPrompts) * 100), // 8/10 = 80%
-          accuracy: finalStats.completedResponses / finalStats.totalPrompts, // 8/10 = 0.8
-          speed: 1 / (finalStats.averageResponseTime || 1),
-          fluency: 0.8,
-          confidence: Math.min(0.9, 0.3 + (finalStats.completedResponses / finalStats.totalPrompts) * 0.6) // 0.3 + 0.48 = 0.78
+          score: Math.round((finalStats.completedResponses / Math.max(1, finalStats.totalPrompts)) * 100),
+          accuracy: finalStats.completedResponses / Math.max(1, finalStats.totalPrompts),
+          speed: finalStats.averageResponseTime > 0 ? 1 / finalStats.averageResponseTime : 0,
+          fluency: Math.min(0.9, 0.3 + (finalStats.completedResponses / Math.max(1, finalStats.totalPrompts)) * 0.6),
+          confidence: Math.min(0.9, 0.3 + (finalStats.completedResponses / Math.max(1, finalStats.totalPrompts)) * 0.6)
         };
 
         const gameSpecificData = {
           rapidFire: {
             prompt: currentPrompt,
-            responseTime: finalStats.averageResponseTime, // Random 1-7 seconds
-            analogyQuality: performance.score / 10,
-            totalPrompts: finalStats.totalPrompts, // Always 10
-            completedResponses: finalStats.completedResponses // Always 8
+            responseTime: finalStats.averageResponseTime,
+            analogyQuality: performance.score / 100,
+            totalPrompts: finalStats.totalPrompts,
+            completedResponses: finalStats.completedResponses
           }
         };
 
@@ -235,36 +228,38 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
     }
   };
 
-  const handleResponse = (transcript: string) => {
-    // Prevent multiple responses for the same prompt
+  const handleResponse = async (transcript: string) => {
     if (isProcessingResponse || processedPrompts.current.has(promptIndex)) {
       console.log('Response already processed for this prompt, ignoring');
       return;
     }
 
-    setIsProcessingResponse(true);
+    // Mark this prompt as processed to prevent duplicate responses
     processedPrompts.current.add(promptIndex);
-    
+    setIsProcessingResponse(true);
+
     const responseTime = Date.now() - promptStartRef.current;
     responseTimes.current.push(responseTime);
-    
-    // Improved confidence scoring based on response time and length
-    const isGoodResponse = responseTime <= 5000 && transcript.length > 10;
+
+    // Only count responses that are actually recognized and meet quality criteria
+    const isGoodResponse = responseTime <= 5000 && transcript.trim().length > 10;
     
     if (isGoodResponse) {
-      // Automatically increment completed responses for the first 8 prompts
-      // This makes the game more engaging while maintaining consistent final stats
+      // Only increment completed responses for actual good responses
       setGameStats(prev => ({
         ...prev,
-        completedResponses: Math.min(8, prev.completedResponses + 1)
+        completedResponses: prev.completedResponses + 1
       }));
+    } else {
+      // Log poor quality responses but don't count them
+      console.log('Response quality too low:', { transcript, responseTime, length: transcript.trim().length });
     }
     
     // Auto-advance to next prompt after a short delay
     setTimeout(() => {
       nextPrompt();
       setIsProcessingResponse(false);
-    }, 1000); // Increased delay for better user experience
+    }, 1000);
   };
 
   const nextPrompt = () => {
@@ -285,19 +280,26 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
   const calculateFinalStats = () => {
     const sessionDuration = Math.round((Date.now() - startTimeRef.current) / 1000);
     
-    // Always return consistent stats for Rapid Fire Analogies
-    // This ensures the post-game analysis always shows the same values
+    // Use actual user performance data instead of fake consistent stats
+    const actualCompletedResponses = gameStats.completedResponses;
+    const actualTotalPrompts = promptIndex + 1; // Count prompts that were actually shown
+    
+    // Calculate real average response time from actual responses
+    const actualAverageResponseTime = responseTimes.current.length > 0 
+      ? Math.round(responseTimes.current.reduce((sum, time) => sum + time, 0) / responseTimes.current.length / 1000)
+      : 0;
+    
     const finalStats = {
-      totalPrompts: 10, // Always 10 total prompts
-      completedResponses: 8, // Always 8 completed responses
-      averageResponseTime: Math.floor(Math.random() * 7) + 1, // Random time between 1-7 seconds
-      sessionDuration: Math.max(50, sessionDuration) // At least 50 seconds
+      totalPrompts: actualTotalPrompts,
+      completedResponses: actualCompletedResponses,
+      averageResponseTime: actualAverageResponseTime,
+      sessionDuration: Math.max(10, sessionDuration) // At least 10 seconds
     };
     
     setGameStats(finalStats);
-    console.log('Final RapidFire game stats (consistent):', finalStats);
+    console.log('Final RapidFire game stats (actual):', finalStats);
     
-    return finalStats; // Return stats for backend use
+    return finalStats;
   };
 
   const resetGame = () => {
@@ -339,7 +341,7 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
               
               <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="bg-muted rounded-lg p-4">
-                  <div className="text-2xl font-bold text-primary">8</div>
+                  <div className="text-2xl font-bold text-primary">{gameStats.completedResponses}</div>
                   <div className="text-sm text-muted-foreground">Responses Given</div>
                 </div>
                 <div className="bg-muted rounded-lg p-4">
@@ -347,12 +349,12 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
                   <div className="text-sm text-muted-foreground">Avg Response Time</div>
                 </div>
                 <div className="bg-muted rounded-lg p-4">
-                  <div className="text-2xl font-bold text-green-600">10</div>
+                  <div className="text-2xl font-bold text-green-600">{gameStats.totalPrompts}</div>
                   <div className="text-sm text-muted-foreground">Total Prompts</div>
                 </div>
                 <div className="bg-muted rounded-lg p-4">
-                  <div className="text-2xl font-bold text-blue-600">{gameStats.sessionDuration}s</div>
-                  <div className="text-sm text-muted-foreground">Total Time</div>
+                  <div className="text-2xl font-bold text-blue-600">{Math.round((gameStats.completedResponses / Math.max(1, gameStats.totalPrompts)) * 100)}%</div>
+                  <div className="text-sm text-muted-foreground">Success Rate</div>
                 </div>
               </div>
               
@@ -362,7 +364,7 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <div className="text-lg font-bold text-primary">
-                      80%
+                      {Math.round((gameStats.completedResponses / Math.max(1, gameStats.totalPrompts)) * 100)}%
                     </div>
                     <div className="text-xs text-muted-foreground">Completion Rate</div>
                   </div>
@@ -374,7 +376,7 @@ export const RapidFireGame = ({ onBack }: RapidFireGameProps) => {
                   </div>
                   <div>
                     <div className="text-lg font-bold text-green-600">
-                      78%
+                      {Math.round((gameStats.completedResponses / Math.max(1, gameStats.totalPrompts)) * 100)}%
                     </div>
                     <div className="text-xs text-muted-foreground">Confidence</div>
                   </div>
