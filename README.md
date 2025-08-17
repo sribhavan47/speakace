@@ -59,7 +59,6 @@ cd speakace
 ### 2. Install Dependencies
 ```bash
 # Frontend
-cd frontend
 npm install
 
 # Backend
