@@ -2,13 +2,31 @@ import { GameCard } from "./GameCard";
 import { Button } from "@/components/ui/button";
 import { Brain, Zap, Target, ArrowLeft, Trophy, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import apiService from "@/services/api";
 
 interface GameDashboardProps {
   onGameSelect: (gameId: string) => void;
   onBack: () => void;
+  onLogout: () => void;
 }
 
-export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
+interface UserStats {
+  gamesCompleted: number;
+  totalPracticeTime: number;
+  confidenceScore: number;
+  averageScore: number;
+}
+
+export const GameDashboard = ({ onGameSelect, onBack, onLogout }: GameDashboardProps) => {
+  const [userStats, setUserStats] = useState<UserStats>({
+    gamesCompleted: 0,
+    totalPracticeTime: 0,
+    confidenceScore: 0,
+    averageScore: 0
+  });
+  const [loading, setLoading] = useState(true);
+
   const games = [
     {
       id: "rapid-fire",
@@ -42,30 +60,87 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
     }
   ];
 
+  // Fetch user stats
+  const fetchUserStats = async () => {
+    try {
+      setLoading(true);
+      const response = await apiService.getUserStats();
+      if (response.success) {
+        const stats = response.data;
+        console.log('Fetched user stats:', stats); // Debug logging
+        
+        setUserStats({
+          gamesCompleted: stats.totalGamesPlayed || 0,
+          totalPracticeTime: Math.round((stats.totalTimeSpent || 0) / 60), // Convert seconds to minutes
+          confidenceScore: Math.round((stats.averageConfidence || 0) * 100), // Convert to percentage
+          averageScore: Math.round(stats.averageScore || 0)
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch user stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch stats on mount and when returning from games
+  useEffect(() => {
+    fetchUserStats();
+    
+    // Refresh stats when user returns to the tab
+    const handleFocus = () => {
+      fetchUserStats();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
+
+  // Refresh stats when returning from games
+  const handleGameSelect = (gameId: string) => {
+    onGameSelect(gameId);
+  };
+
+  const handleBack = () => {
+    fetchUserStats(); // Refresh stats when returning
+    onBack();
+  };
+
+  // Add manual refresh function
+  const handleRefreshStats = () => {
+    fetchUserStats();
+  };
+
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              onClick={onBack}
-              className="border-border bg-card text-card-foreground hover:bg-muted"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+            <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" />
               Back to Home
             </Button>
-            
             <div>
               <h1 className="text-3xl font-bold text-foreground">Training Dashboard</h1>
-              <p className="text-muted-foreground">Choose a game to start improving your speaking skills</p>
+              <p className="text-muted-foreground">Choose a game to start improving your speaking skills.</p>
             </div>
           </div>
-          
-          <div className="flex items-center gap-2 bg-card border border-border rounded-lg p-3">
-            <Trophy className="w-5 h-5 text-accent" />
-            <span className="font-semibold text-card-foreground">Level 1 Speaker</span>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={handleRefreshStats} className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Refresh Stats
+            </Button>
+            <Button variant="outline" className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-yellow-500" />
+              Level 1 Speaker
+            </Button>
+            <Button variant="outline" onClick={onLogout}>
+              Logout
+            </Button>
           </div>
         </div>
 
@@ -76,7 +151,9 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
               <CardTitle className="text-sm font-medium text-muted-foreground">Games Completed</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">0</div>
+              <div className="text-2xl font-bold text-primary">
+                {loading ? "..." : userStats.gamesCompleted}
+              </div>
               <p className="text-xs text-muted-foreground">out of 3 games</p>
             </CardContent>
           </Card>
@@ -86,8 +163,12 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
               <CardTitle className="text-sm font-medium text-muted-foreground">Total Practice Time</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-accent">0m</div>
-              <p className="text-xs text-muted-foreground">Start your first session</p>
+              <div className="text-2xl font-bold text-accent">
+                {loading ? "..." : `${userStats.totalPracticeTime}m`}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {userStats.totalPracticeTime === 0 ? "Start your first session" : "Keep practicing!"}
+              </p>
             </CardContent>
           </Card>
           
@@ -96,8 +177,12 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
               <CardTitle className="text-sm font-medium text-muted-foreground">Confidence Score</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-accent">--</div>
-              <p className="text-xs text-muted-foreground">Complete a game to see score</p>
+              <div className="text-2xl font-bold text-accent">
+                {loading ? "..." : userStats.confidenceScore > 0 ? `${userStats.confidenceScore}%` : "--"}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {userStats.confidenceScore > 0 ? "Great progress!" : "Complete a game to see score"}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -114,7 +199,7 @@ export const GameDashboard = ({ onGameSelect, onBack }: GameDashboardProps) => {
               duration={game.duration}
               skills={game.skills}
               isLocked={game.isLocked}
-              onPlay={() => onGameSelect(game.id)}
+              onPlay={() => handleGameSelect(game.id)}
             />
           ))}
         </div>
