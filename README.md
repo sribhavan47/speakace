@@ -207,7 +207,3 @@ npm run dev
 ## ⚡ Performance & Scalability
 - Client-side caching with React Query
 - Indexed queries in MongoDB
-- Compression middleware
-```
-
-This formatted version includes proper markdown syntax with code blocks, consistent spacing, and clear section divisions. You can copy and paste this directly into your README.md or documentation file.
