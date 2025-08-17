@@ -1,140 +1,132 @@
-SpeakAce - AI-Powered Public Speaking Training Platform
+# SpeakAce - AI-Powered Public Speaking Training Platform
+
 SpeakAce is a gamified AI-driven platform designed to help individuals improve public speaking skills through interactive games, real-time speech analysis, and personalized AI feedback.
 
-🚀 Features
+---
 
-🎮 3 Interactive Games: Rapid Fire Analogies, The Conductor, Triple Step Integration
-🧠 AI-Powered Feedback: Clarity, energy modulation, coherence
-📊 Progress Tracking: Track stats, achievements, and improvement trends
-🔒 Secure Authentication: JWT-based sessions, bcrypt password hashing
-⚡ Modern Tech Stack: React + Vite frontend, Node.js + Express backend, MongoDB database
+## 🚀 Features
+- 🎮 **3 Interactive Games**: Rapid Fire Analogies, The Conductor, Triple Step Integration
+- 🧠 **AI-Powered Feedback**: Clarity, energy modulation, coherence
+- 📊 **Progress Tracking**: Track stats, achievements, and improvement trends
+- 🔒 **Secure Authentication**: JWT-based sessions, bcrypt password hashing
+- ⚡ **Modern Tech Stack**: React + Vite frontend, Node.js + Express backend, MongoDB database
 
+---
 
-🛠️ Tech Stack
-Frontend
+## 🛠️ Tech Stack
+### **Frontend**
+- React 18 + TypeScript
+- Vite (build tool)
+- Shadcn UI + Tailwind CSS
+- React Query + Context API (state management)
+- React Router v6 (routing)
+- Custom Speech Recognition Hook (`useSpeechRecognition`)
 
-React 18 + TypeScript
-Vite (build tool)
-Shadcn UI + Tailwind CSS
-React Query + Context API (state management)
-React Router v6 (routing)
-Custom Speech Recognition Hook (useSpeechRecognition)
+### **Backend**
+- Node.js + Express.js
+- MongoDB + Mongoose ODM
+- JWT Authentication + bcryptjs
+- AI Integration: Google Gemini API
+- Socket.IO (real-time, planned)
+- Winston Logger
+- Helmet + CORS + Rate Limiting (security)
 
-Backend
+### **Database**
+- **Collections**:
+  - `Users` → Profile, achievements, stats
+  - `GameSessions` → Performance data, timestamps
+  - `Analytics` → Aggregated performance metrics
 
-Node.js + Express.js
-MongoDB + Mongoose ODM
-JWT Authentication + bcryptjs
-AI Integration: Google Gemini API
-Socket.IO (real-time, planned)
-Winston Logger
-Helmet + CORS + Rate Limiting (security)
+---
 
-Database
+## 📂 Project Structure
+frontend → React UI, games, dashboard
+backend → Express API, AI integration, database
 
-Collections:
+## ⚙️ Installation & Running Locally
 
-Users → Profile, achievements, stats
-GameSessions → Performance data, timestamps
-Analytics → Aggregated performance metrics
-
-
-
-
-📂 Project Structure
-/frontend        → React UI, games, dashboard
-/backend         → Express API, AI integration, database
-/docs            → Documentation files (this README contains merged docs)
-
-⚙️ Installation & Running Locally
-1. Clone the Repository
-bashgit clone https://github.com/your-org/speakace.git
+### 1. Clone the Repository
+git clone https://github.com/your-org/speakace.git
 cd speakace
+
 2. Install Dependencies
-bash# Frontend
+
+# Frontend
 cd frontend
 npm install
 
 # Backend
 cd ../backend
 npm install
+
 3. Configure Environment Variables
 Create .env in backend folder:
 MONGO_URI=your-mongodb-uri
 JWT_SECRET=your-secret
 GEMINI_API_KEY=your-gemini-api-key
+
 4. Run Development Servers
-bash# Frontend
+
+# Frontend
 cd frontend
 npm run dev
 
 # Backend
 cd backend
 npm run dev
+
 5. Access the App
-
 Frontend → http://localhost:5173
-Backend API → http://localhost:5000
 
+Backend API → http://localhost:5000
 
 🎮 Game Design
 1. Rapid Fire Analogies
-
 Objective: Train quick thinking & creativity.
 Gameplay: User is given a word → must generate analogy within 10 sec.
+
 Scoring:
 
 Creativity = 50%
 Relevance = 30%
 Delivery speed = 20%
-
-
 AI Feedback: Coherence, vocabulary range, fluency.
 
-
 2. The Conductor
-
 Objective: Improve energy modulation & vocal tone.
 Gameplay: User must speak with varying intonation guided by AI.
+
 Scoring:
 
 Energy variation = 40%
 Vocal clarity = 40%
 Confidence = 20%
 
-
 AI Feedback: Monotony detection, enthusiasm scoring.
 
-
 3. Triple Step Integration
-
 Objective: Build structured communication.
+
 Gameplay:
 
 Step 1 → Intro (30 sec)
 Step 2 → Body (60 sec)
 Step 3 → Conclusion (30 sec)
 
-
 Scoring:
-
 Structure = 50%
 Coherence = 30%
 Timing = 20%
 
-
 AI Feedback: Logical flow, clarity of transitions.
 
-
 📊 Example User Flow
-
 Register/Login → Secure session with JWT
 Choose Game → Session created
 Play Game → Speech recorded & analyzed
 AI Feedback → Real-time performance insights
 Results Stored → Stats updated in MongoDB
 Dashboard → Track progress & achievements
-
 
 🏗️ Architecture Overview
 High-Level System Architecture
@@ -148,62 +140,39 @@ High-Level System Architecture
 
 🚀 Deployment Guide
 Backend Deployment (Node.js + MongoDB)
-
 Provision a server (e.g., AWS EC2, DigitalOcean, Render)
 Install Node.js and MongoDB (or use MongoDB Atlas)
-Copy backend files
 Configure .env
+
 Install dependencies:
-bashnpm install
+npm install
 
 Run with:
-bashnpm run start
-
+npm run start
 (Optional) Use PM2 for process management
 
-
 Frontend Deployment (React + Vite)
-
 Build static assets:
-bashnpm run build
+npm run build
 
 Serve with:
-
 Vercel (recommended)
 Netlify
 Static hosting (Nginx/Apache)
 
-
-
-
 Docker Deployment
-
 Build images:
-bashdocker-compose build
+docker-compose build
 
 Run containers:
-bashdocker-compose up -d
-
-
-
+docker-compose up -d
 🔐 Security
-
 JWT tokens for session management
 Bcrypt password hashing
 Helmet + CORS + Rate limiting
 Environment variables for sensitive keys
 
-
 ⚡ Performance & Scalability
-
 Client-side caching with React Query
 Indexed queries in MongoDB
 Compression middleware
-Future-ready:
-
-Socket.IO for real-time feedback
-Horizontal scaling with load balancers
-CDN for static assets
-
-
-
