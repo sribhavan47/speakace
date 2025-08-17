@@ -86,12 +86,6 @@ cd backend
 npm run dev
 ```
 
-### 5. Access the App
-- Frontend → http://localhost:5173
-- Backend API → http://localhost:5000
-
----
-
 ## 🎮 Game Design
 
 ### 1. Rapid Fire Analogies
